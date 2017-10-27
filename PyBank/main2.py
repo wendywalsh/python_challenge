@@ -69,13 +69,7 @@ with open(csvpath) as csvfile:
     print("max decrease date" + str(max_decrease_date))
 
 
-
-
-
-output_path = 'Resourses'/'new_budget_1.csv'
-
-with open(output_path, 'w', newline ='') as csvfile:
-    csvwriter = csv.writer(csvfile, delimiter = ',')
+  
 
 
 

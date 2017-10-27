@@ -3,59 +3,67 @@ import os
 import csv
 
 csvpath = os.path.join('raw_data','budget_data_1.csv')
-with open(csvpath, newline='') as csvfile:
-    csv_data = csv.reader(csvfile, delimiter = ',')
-    #my_list = [[int(x) for x in rec] for rec in csv.reader(p, delimiter=',')]
-    next(csv_data)
-
-    data = list(csv_data)
-    total_months= len(data) 
-    print(total_months)  
-
-#count rows to find total months and set to varialbe -1
+with open(csvpath) as csvfile:
+    reader= csv.DictReader(csvfile)
     
 
-# change revenue data to integer
-    for row in csv_data: 
-        revenue_data = int(row[1])
-        
-    revenue_list = list(revenue_data)   
-    print(revenue_list)
-
-#data = list(csv_data)
-#total_months= len(data) 
-#print(total_months)  
-     
-   
-#Create list for Revenue only
-    #revenue_list = [item[1] for item in data]
-    #print(revenue_list) #works
-#------------------------------------------------------don't mess with above
-    #Sum Revenue list set variable as Total_Revenue
-    #total_revenue = sum(revenue_data)
-    #print(revenue_data)
-   
-
-#What is the average revenue change
+#Declare variables
+    total_months = 0
+    total_revenue = 0
+    date_for_increase = "unkown"
+    max_decrease = 0
+    max_increase = 0
+    date_for_decrease = "unkown"
+    delta = 0
+    average_delta = 0
+    previous_month_rev = 0
+    current_month_rev = 0
+    Avg_change = 0
 
 
+# create loop 
+    for row in reader:
+        previous_month_rev = current_month_rev # set total as iterates through rows
+  #get count total rows for total months      
+        total_months = total_months + 1
+  # get total revenue
+        total_revenue = total_revenue + int(row["Revenue"])
+    #print(total_revenue)
+        if previous_month_rev == 0:
+            skip = int(row["Revenue"])  # first row has no previous
 
-# find greatest increase in revenue.  max()
-    #max_increase = max(revenue_list)
-    #print(max_increase)
-# find greated decrease in revenue. min()
-    #min_increase = min(revenue_list)
-    #print(min_increase)
+    # set current month value
+        current_month_rev = int(row["Revenue"])
+    
+    # find difference between months
+        change = current_month_rev - previous_month_rev
+    
+    # Sum monthly changes
+        delta = delta + change 
+       
+    # find max and min changes
+
+        if change > max_increase:
+            max_increase = change
+            max_increase_date = row["Date"]
+        elif change < max_decrease:
+            max_decrease = change
+            max_decrease_date = row["Date"]
+
+    Avg_change = delta - skip
+    avg_diff= Avg_change/(total_months -1)
+
 
 #Final output
-#print("Financial Analysis")
-#print("------------------------------------")
-#print(f"Total Months: "{total_months})
-#print(f"Total_Revenue: "{})
-#print(f"Average Revenue Changes: "{})
-#print(f"Greatest Increase in Revenue: "{max_increase})
-#print(f"Greatest Decerase in Revenue: "{})
+    print("Financial Analysis")
+    print("------------------------------------")
 
-#csvpath = os.path.join('raw_data','budget_data_1.csv')
-#with open(csvpath, newline='') as csvfile:
-    #csv_data = csv.reader(csvfile, delimiter = ',')
+    print("total_months:" + str(total_months))
+    print("total revenue:" + str(total_revenue))
+    print("average change:" + str(avg_diff))
+    print("max increase:" + str(max_increase))
+    print("max increase:" + str(max_increase_date))
+    print("max decrease:" + str(max_decrease))
+    print("max decrease date" + str(max_decrease_date))
+
+#Write to text file
